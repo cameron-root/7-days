@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu — 7 Days Restaurant | Naugarh</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:       #0f0d0c;
+      --surface:  #171412;
+      --surface2: #1f1b18;
+      --surface3: #272220;
+      --gold:     #c9a84c;
+      --gold-lt:  #e8c96a;
+      --gold-dim: #7a6228;
+      --rose:     #c8816a;
+      --rose-lt:  #e8a090;
+      --green:    #4a7c59;
+      --green-lt: #6aaa7a;
+      --white:    #faf7f2;
+      --muted:    #8a8078;
+      --serif:    'Playfair Display', Georgia, serif;
+      --thin:     'Cormorant Garamond', Georgia, serif;
+      --sans:     'DM Sans', sans-serif;
+      --r:        8px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--white);font-family:var(--sans);overflow-x:hidden}
+    a{color:inherit;text-decoration:none}
+    button{cursor:pointer;border:none;background:none;font-family:inherit;color:inherit}
+    ::-webkit-scrollbar{width:3px}
+    ::-webkit-scrollbar-thumb{background:var(--gold-dim)}
+    .container{max-width:1100px;margin:0 auto;padding:0 1.5rem}
+
+    /* NAV */
+    #nav{position:fixed;top:0;left:0;right:0;z-index:900;display:flex;align-items:center;justify-content:space-between;padding:.9rem 2rem;background:rgba(15,13,12,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 1px 0 rgba(201,168,76,.12)}
+    .nav-brand{display:flex;align-items:center;gap:.75rem}
+    .nav-emblem{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--gold);background:radial-gradient(circle at 40% 40%,#2a2218,#111);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:1rem;font-weight:900;color:var(--gold)}
+    .nav-name{display:flex;flex-direction:column;line-height:1.1}
+    .nav-name b{font-family:var(--serif);font-size:.88rem;color:var(--white)}
+    .nav-name small{font-size:.58rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase}
+    .nav-back{display:flex;align-items:center;gap:.5rem;font-size:.8rem;font-weight:600;color:var(--muted);letter-spacing:.06em;transition:color .2s}
+    .nav-back:hover{color:var(--white)}
+    .nav-back svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+    .hamburger{display:none;flex-direction:column;gap:5px;padding:4px}
+    .hamburger span{display:block;width:22px;height:1.5px;background:var(--white);border-radius:2px;transition:transform .3s,opacity .3s}
+    .hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+    .mob-drawer{display:none;position:fixed;inset:0;z-index:899;background:rgba(10,8,7,.97);flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;opacity:0;pointer-events:none;transition:opacity .3s}
+    .mob-drawer.open{opacity:1;pointer-events:all}
+    .mob-drawer a{font-family:var(--serif);font-size:1.8rem;color:var(--white)}
+
+    /* PAGE HERO */
+    .menu-hero{
+      padding:8rem 0 4rem;
+      text-align:center;
+      position:relative;
+      background:linear-gradient(180deg,rgba(74,124,89,.08) 0%,transparent 100%);
+      border-bottom:1px solid rgba(201,168,76,.1);
+    }
+    .menu-hero h1{font-family:var(--serif);font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;line-height:1}
+    .menu-hero h1 em{color:var(--gold);font-style:italic}
+    .menu-hero p{color:var(--muted);font-size:.9rem;margin-top:.75rem;letter-spacing:.04em}
+
+    /* LEGEND */
+    .legend{display:flex;align-items:center;justify-content:center;gap:1.5rem;margin-top:2rem;flex-wrap:wrap}
+    .legend-item{display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--muted)}
+    .dot-veg{width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0}
+    .dot-nv{width:10px;height:10px;border-radius:50%;background:var(--rose);flex-shrink:0}
+    .dot-sp{width:10px;height:10px;border-radius:50%;background:var(--gold);flex-shrink:0}
+
+    /* STICKY SECTION NAV */
+    .section-nav{
+      position:sticky;top:58px;z-index:800;
+      background:var(--surface);
+      border-bottom:1px solid rgba(255,255,255,.06);
+      overflow-x:auto;white-space:nowrap;
+      scrollbar-width:none;
+    }
+    .section-nav::-webkit-scrollbar{display:none}
+    .section-nav-inner{display:inline-flex;gap:0;padding:0 1.5rem}
+    .snav-btn{
+      padding:.85rem 1.4rem;
+      font-size:.78rem;font-weight:600;
+      letter-spacing:.08em;text-transform:uppercase;
+      color:var(--muted);
+      border-bottom:2px solid transparent;
+      transition:color .2s,border-color .2s;
+      white-space:nowrap;
+    }
+    .snav-btn:hover{color:var(--white)}
+    .snav-btn.active-veg{color:var(--green-lt);border-color:var(--green)}
+    .snav-btn.active-nv{color:var(--rose-lt);border-color:var(--rose)}
+    .snav-btn.active-all{color:var(--gold);border-color:var(--gold)}
+
+    /* MAIN LAYOUT */
+    .menu-body{padding:3rem 0 6rem}
+
+    /* SECTION DIVIDER */
+    .menu-section{margin-bottom:4rem}
+    .msec-header{
+      display:flex;align-items:center;gap:1.5rem;
+      margin-bottom:2rem;padding:1.5rem 2rem;
+      border-radius:var(--r);
+      position:relative;overflow:hidden;
+    }
+    .msec-header.veg-hdr{background:linear-gradient(135deg,rgba(74,124,89,.15),rgba(74,124,89,.05));border:1px solid rgba(74,124,89,.25)}
+    .msec-header.nv-hdr{background:linear-gradient(135deg,rgba(200,129,106,.15),rgba(200,129,106,.05));border:1px solid rgba(200,129,106,.25)}
+    .msec-header.sp-hdr{background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.04));border:1px solid rgba(201,168,76,.2)}
+    .msec-icon{font-size:2.5rem;flex-shrink:0}
+    .msec-title{font-family:var(--serif);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700}
+    .msec-header.veg-hdr .msec-title{color:var(--green-lt)}
+    .msec-header.nv-hdr .msec-title{color:var(--rose-lt)}
+    .msec-header.sp-hdr .msec-title{color:var(--gold)}
+    .msec-sub{font-size:.82rem;color:var(--muted);margin-top:.3rem}
+    .msec-bg-text{
+      position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);
+      font-family:var(--serif);font-size:5rem;font-weight:900;
+      opacity:.04;letter-spacing:.1em;pointer-events:none;line-height:1;
+    }
+
+    /* CATEGORY INSIDE SECTION */
+    .cat-block{margin-bottom:2.5rem}
+    .cat-label{
+      display:flex;align-items:center;gap:1rem;
+      margin-bottom:1.25rem;
+    }
+    .cat-label span{
+      font-size:.68rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+      color:var(--muted);white-space:nowrap;
+    }
+    .cat-label::before,.cat-label::after{
+      content:'';flex:1;height:1px;
+    }
+    .cat-label.vl::before,.cat-label.vl::after{background:rgba(74,124,89,.25)}
+    .cat-label.nl::before,.cat-label.nl::after{background:rgba(200,129,106,.25)}
+    .cat-label.gl::before,.cat-label.gl::after{background:rgba(201,168,76,.2)}
+
+    /* MENU GRID */
+    .menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,.04);border-radius:var(--r);overflow:hidden;border:1px solid rgba(255,255,255,.04)}
+    .mi{
+      background:var(--bg);
+      display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;
+      padding:1.25rem 1.5rem;
+      transition:background .2s;
+      border-bottom:1px solid rgba(255,255,255,.03);
+    }
+    .mi:hover{background:var(--surface2)}
+    .mi-left{flex:1}
+    .mi-name{font-weight:600;font-size:.92rem;color:var(--white);margin-bottom:.25rem;display:flex;align-items:center;gap:.5rem}
+    .mi-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .vdot{background:var(--green)}
+    .ndot{background:var(--rose)}
+    .sdot{background:var(--gold)}
+    .mi-desc{font-size:.78rem;color:var(--muted);line-height:1.5;margin-left:1.25rem}
+    .mi-badge{display:inline-block;font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.12rem .4rem;border-radius:3px;margin-top:.3rem;margin-left:1.25rem}
+    .badge-sp{background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.25)}
+    .badge-new{background:rgba(74,124,89,.15);color:var(--green-lt);border:1px solid rgba(74,124,89,.25)}
+    .badge-hot{background:rgba(220,50,50,.15);color:#f87171;border:1px solid rgba(220,50,50,.2)}
+    .mi-price{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--gold);white-space:nowrap;flex-shrink:0;padding-top:.1rem}
+
+    /* FULL WIDTH items (thali / combos) */
+    .menu-grid.full .mi{grid-column:span 1}
+    .menu-grid.singles{grid-template-columns:1fr}
+
+    /* SEARCH BAR */
+    .search-wrap{margin-bottom:2rem;position:relative}
+    .search-input{
+      width:100%;padding:.9rem 1rem .9rem 3rem;
+      background:var(--surface2);border:1px solid rgba(255,255,255,.08);
+      border-radius:var(--r);color:var(--white);font-family:var(--sans);font-size:.9rem;
+      transition:border-color .2s;outline:none;
+    }
+    .search-input::placeholder{color:var(--muted)}
+    .search-input:focus{border-color:rgba(201,168,76,.4)}
+    .search-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--muted)}
+    .search-icon svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
+
+    /* FILTER CHIPS */
+    .filter-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2.5rem}
+    .fchip{
+      padding:.4rem 1rem;border-radius:100px;font-size:.75rem;font-weight:600;
+      letter-spacing:.06em;border:1px solid rgba(255,255,255,.1);color:var(--muted);
+      transition:all .2s;
+    }
+    .fchip:hover,.fchip.on{color:var(--white);border-color:rgba(255,255,255,.35)}
+    .fchip.veg-chip.on{background:rgba(74,124,89,.2);border-color:var(--green);color:var(--green-lt)}
+    .fchip.nv-chip.on{background:rgba(200,129,106,.2);border-color:var(--rose);color:var(--rose-lt)}
+    .fchip.sp-chip.on{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gold)}
+
+    /* NOTE */
+    .menu-note{text-align:center;margin:3rem 0 0;font-size:.8rem;color:var(--muted);padding:1.5rem;border:1px solid rgba(255,255,255,.06);border-radius:var(--r);background:var(--surface)}
+    .menu-note a{color:var(--gold);border-bottom:1px solid var(--gold-dim)}
+
+    /* RESPONSIVE */
+    @media(max-width:700px){
+      .menu-grid{grid-template-columns:1fr}
+      .nav-back span{display:none}
+      .hamburger{display:flex}
+      .mob-drawer{display:flex}
+    }
+  </style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-back">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    <span>Back to Home</span>
+  </a>
+  <a href="index.html" class="nav-brand">
+    <div class="nav-emblem">7</div>
+    <div class="nav-name"><b>7 Days Restaurant</b><small>Eat The Best</small></div>
+  </a>
+  <a href="https://wa.me/917860222555" target="_blank" style="font-size:.78rem;font-weight:600;color:var(--green-lt);letter-spacing:.06em">📞 Reserve</a>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="menu-hero">
+  <h1>Our <em>Menu</em></h1>
+  <p>Fresh ingredients · Authentic flavours · Made with love, every day</p>
+  <div class="legend">
+    <div class="legend-item"><div class="dot-veg"></div> Vegetarian</div>
+    <div class="legend-item"><div class="dot-nv"></div> Non-Vegetarian</div>
+    <div class="legend-item"><div class="dot-sp"></div> Chef's Special</div>
+  </div>
+</div>
+
+<!-- STICKY SECTION NAV -->
+<nav class="section-nav" id="snav">
+  <div class="section-nav-inner">
+    <button class="snav-btn" onclick="scrollTo('#veg')">🥦 Veg Menu</button>
+    <button class="snav-btn" onclick="scrollTo('#nonveg')">🍗 Non-Veg Menu</button>
+    <button class="snav-btn" onclick="scrollTo('#chinese')">🥢 Chinese</button>
+    <button class="snav-btn" onclick="scrollTo('#thali')">🍱 Thali & Combos</button>
+    <button class="snav-btn" onclick="scrollTo('#fastfood')">🍔 Fast Food</button>
+    <button class="snav-btn" onclick="scrollTo('#desserts')">🍮 Desserts</button>
+    <button class="snav-btn" onclick="scrollTo('#beverages')">🥤 Beverages</button>
+    <button class="snav-btn" onclick="scrollTo('#specials')">⭐ Chef's Specials</button>
+  </div>
+</nav>
+
+<div class="menu-body">
+  <div class="container">
+
+    <!-- SEARCH + FILTERS -->
+    <div class="search-wrap">
+      <div class="search-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+      <input class="search-input" type="text" id="searchInput" placeholder="Search dishes e.g. Paneer, Chicken, Biryani…"/>
+    </div>
+    <div class="filter-row">
+      <button class="fchip veg-chip" data-filter="veg">🟢 Veg Only</button>
+      <button class="fchip nv-chip" data-filter="nonveg">🔴 Non-Veg Only</button>
+      <button class="fchip sp-chip" data-filter="special">⭐ Chef's Specials</button>
+      <button class="fchip" data-filter="all">All Items</button>
+    </div>
+
+    <!-- ═══ VEG SECTION ═══ -->
+    <div class="menu-section" id="veg">
+      <div class="msec-header veg-hdr">
+        <div class="msec-icon">🌿</div>
+        <div>
+          <div class="msec-title">Pure Vegetarian</div>
+          <div class="msec-sub">Fresh, flavourful, 100% vegetarian goodness</div>
+        </div>
+        <div class="msec-bg-text">VEG</div>
+      </div>
+
+      <!-- Veg Starters -->
+      <div class="cat-block">
+        <div class="cat-label vl"><span>Veg Starters</span></div>
+        <div class="menu-grid">
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Paneer Tikka</div><div class="mi-desc">Marinated cottage cheese grilled in tandoor with mint chutney</div></div><div class="mi-price">₹220</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Veg Seekh Kebab</div><div class="mi-desc">Spiced vegetable mince on skewer, tandoor-cooked to perfection</div></div><div class="mi-price">₹180</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Crispy Corn</div><div class="mi-desc">Golden fried sweet corn tossed with spices and fresh herbs</div></div><div class="mi-price">₹160</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Hara Bhara Kebab</div><div class="mi-desc">Spinach and pea patties pan-fried with aromatic spices</div></div><div class="mi-price">₹170</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Paneer Malai Tikka</div><div class="mi-desc">Cottage cheese in cream marinade, mild and melt-in-mouth</div><span class="mi-badge badge-sp">Special</span></div><div class="mi-price">₹250</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Stuffed Mushroom</div><div class="mi-desc">Mushrooms stuffed with spiced cheese filling, grilled</div></div><div class="mi-price">₹200</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Aloo Tikki</div><div class="mi-desc">Classic spiced potato patties with tamarind chutney</div></div><div class="mi-price">₹120</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Mix Veg Platter</div><div class="mi-desc">Assorted veg starters — tikka, kebab, and corn</div><span class="mi-badge badge-sp">Chef's Pick</span></div><div class="mi-price">₹380</div></div>
+        </div>
+      </div>
+
+      <!-- Veg Main Course -->
+      <div class="cat-block">
+        <div class="cat-label vl"><span>Veg Main Course</span></div>
+        <div class="menu-grid">
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Dal Makhani</div><div class="mi-desc">Slow-cooked black lentils in rich buttery tomato gravy</div><span class="mi-badge badge-sp">House Favourite</span></div><div class="mi-price">₹180</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Paneer Butter Masala</div><div class="mi-desc">Cottage cheese in velvety tomato-cream sauce</div></div><div class="mi-price">₹220</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Shahi Paneer</div><div class="mi-desc">Royal cottage cheese in cashew-saffron cream gravy</div></div><div class="mi-price">₹240</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Palak Paneer</div><div class="mi-desc">Fresh spinach gravy with soft paneer cubes</div></div><div class="mi-price">₹200</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Kadai Paneer</div><div class="mi-desc">Paneer cooked with bell peppers and tomato in kadai masala</div></div><div class="mi-price">₹220</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Mix Veg Curry</div><div class="mi-desc">Seasonal vegetables in home-style spiced gravy</div></div><div class="mi-price">₹170</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Matar Mushroom</div><div class="mi-desc">Green peas and mushrooms in onion-tomato masala</div></div><div class="mi-price">₹190</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Dal Tadka</div><div class="mi-desc">Yellow lentils tempered with cumin, garlic, and dried chilli</div></div><div class="mi-price">₹150</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Veg Biryani</div><div class="mi-desc">Fragrant basmati layered with vegetables and saffron, dum-cooked</div></div><div class="mi-price">₹200</div></div>
+          <div class="mi" data-type="veg special"><div class="mi-left"><div class="mi-name"><span class="mi-dot sdot"></span>7 Days Special Veg Curry</div><div class="mi-desc">Secret house recipe — rich, aromatic, unforgettable</div><span class="mi-badge badge-sp">Signature</span></div><div class="mi-price">₹260</div></div>
+        </div>
+      </div>
+
+      <!-- Breads & Rice (Veg) -->
+      <div class="cat-block">
+        <div class="cat-label vl"><span>Breads & Rice</span></div>
+        <div class="menu-grid">
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Butter Naan</div><div class="mi-desc">Soft tandoor-baked bread brushed with butter</div></div><div class="mi-price">₹40</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Garlic Naan</div><div class="mi-desc">Naan with garlic butter and fresh coriander</div></div><div class="mi-price">₹50</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Laccha Paratha</div><div class="mi-desc">Flaky layered whole wheat bread from the tandoor</div></div><div class="mi-price">₹45</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Tawa Roti</div><div class="mi-desc">Whole wheat flatbread, thin and soft</div></div><div class="mi-price">₹25</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Steamed Rice</div><div class="mi-desc">Long-grain basmati, perfectly cooked</div></div><div class="mi-price">₹80</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Jeera Rice</div><div class="mi-desc">Basmati tempered with cumin and ghee</div></div><div class="mi-price">₹100</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ NON-VEG SECTION ═══ -->
+    <div class="menu-section" id="nonveg">
+      <div class="msec-header nv-hdr">
+        <div class="msec-icon">🍗</div>
+        <div>
+          <div class="msec-title">Non-Vegetarian</div>
+          <div class="msec-sub">Flame-grilled, slow-cooked, seriously flavourful</div>
+        </div>
+        <div class="msec-bg-text">NON VEG</div>
+      </div>
+
+      <!-- Non-Veg Starters -->
+      <div class="cat-block">
+        <div class="cat-label nl"><span>Non-Veg Starters</span></div>
+        <div class="menu-grid">
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Chicken Tikka</div><div class="mi-desc">Tender chicken marinated in spiced yogurt, flame-grilled</div></div><div class="mi-price">₹280</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Mutton Seekh Kebab</div><div class="mi-desc">Minced mutton with aromatic spices on the grill</div></div><div class="mi-price">₹320</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Tandoori Chicken (Half)</div><div class="mi-desc">Classic whole chicken marinated in red masala, tandoor-fired</div><span class="mi-badge badge-sp">Bestseller</span></div><div class="mi-price">₹360</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Chicken Malai Kebab</div><div class="mi-desc">Boneless chicken in cream marinade, juicy and mild</div></div><div class="mi-price">₹300</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Fish Tikka</div><div class="mi-desc">Fresh fish in tangy marinade, charred on the grill</div></div><div class="mi-price">₹340</div></div>
+          <div class="mi" data-type="nonveg special"><div class="mi-left"><div class="mi-name"><span class="mi-dot sdot"></span>7 Days Non-Veg Platter</div><div class="mi-desc">Assorted tikka, kebab, and wings — the ultimate starter</div><span class="mi-badge badge-sp">Signature</span></div><div class="mi-price">₹580</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Chicken Wings</div><div class="mi-desc">Crispy spiced wings tossed in house sauce</div><span class="mi-badge badge-hot">Spicy</span></div><div class="mi-price">₹260</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Prawn Koliwada</div><div class="mi-desc">Coastal-style fried prawns with semolina coating</div></div><div class="mi-price">₹380</div></div>
+        </div>
+      </div>
+
+      <!-- Non-Veg Main Course -->
+      <div class="cat-block">
+        <div class="cat-label nl"><span>Non-Veg Main Course</span></div>
+        <div class="menu-grid">
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Chicken Butter Masala</div><div class="mi-desc">Tender chicken in rich buttery tomato gravy</div><span class="mi-badge badge-sp">Bestseller</span></div><div class="mi-price">₹280</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Mutton Rogan Josh</div><div class="mi-desc">Kashmiri-style slow-cooked mutton with whole spices</div></div><div class="mi-price">₹360</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Chicken Kadai</div><div class="mi-desc">Chicken cooked with peppers and tomatoes in kadai masala</div></div><div class="mi-price">₹260</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Mutton Korma</div><div class="mi-desc">Slow-braised mutton in aromatic cashew-cream sauce</div></div><div class="mi-price">₹380</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Chicken Biryani</div><div class="mi-desc">Dum-cooked basmati with marinated chicken and whole spices</div><span class="mi-badge badge-sp">Must Try</span></div><div class="mi-price">₹280</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Mutton Biryani</div><div class="mi-desc">Slow-cooked mutton layered in fragrant dum biryani</div></div><div class="mi-price">₹360</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Keema Matar</div><div class="mi-desc">Minced mutton with green peas in spiced onion gravy</div></div><div class="mi-price">₹300</div></div>
+          <div class="mi" data-type="nonveg special"><div class="mi-left"><div class="mi-name"><span class="mi-dot sdot"></span>7 Days Special Curry</div><div class="mi-desc">Chef's secret recipe — changes seasonally, always outstanding</div><span class="mi-badge badge-sp">Signature</span></div><div class="mi-price">₹320</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CHINESE ═══ -->
+    <div class="menu-section" id="chinese">
+      <div class="msec-header sp-hdr">
+        <div class="msec-icon">🥢</div>
+        <div>
+          <div class="msec-title" style="color:var(--gold-lt)">Chinese / Indo-Chinese</div>
+          <div class="msec-sub">Wok-tossed, bold, and unapologetically Indo-Chinese</div>
+        </div>
+        <div class="msec-bg-text">CHINESE</div>
+      </div>
+
+      <div class="cat-block">
+        <div class="cat-label gl"><span>Veg Chinese</span></div>
+        <div class="menu-grid">
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Veg Fried Rice</div><div class="mi-desc">Wok-tossed rice with fresh vegetables and soy</div></div><div class="mi-price">₹160</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Veg Hakka Noodles</div><div class="mi-desc">Stir-fried noodles with vegetables in Chinese spices</div></div><div class="mi-price">₹160</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Paneer Chilli (Dry)</div><div class="mi-desc">Crispy paneer tossed in spicy Indo-Chinese sauce</div></div><div class="mi-price">₹200</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Veg Manchurian</div><div class="mi-desc">Fried vegetable balls in tangy manchurian gravy</div></div><div class="mi-price">₹180</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Schezwan Fried Rice</div><div class="mi-desc">Spicy schezwan-tossed rice with vegetables</div><span class="mi-badge badge-hot">Spicy</span></div><div class="mi-price">₹180</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Veg Spring Rolls</div><div class="mi-desc">Crispy fried rolls stuffed with seasoned vegetables</div></div><div class="mi-price">₹150</div></div>
+        </div>
+      </div>
+
+      <div class="cat-block">
+        <div class="cat-label gl"><span>Non-Veg Chinese</span></div>
+        <div class="menu-grid">
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Chicken Fried Rice</div><div class="mi-desc">Classic wok-tossed rice with juicy chicken pieces</div></div><div class="mi-price">₹200</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Chicken Manchurian</div><div class="mi-desc">Crispy chicken in tangy manchurian gravy</div></div><div class="mi-price">₹240</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Chicken Schezwan Noodles</div><div class="mi-desc">Spicy schezwan noodles with chicken and vegetables</div><span class="mi-badge badge-hot">Spicy</span></div><div class="mi-price">₹220</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Chilli Chicken (Dry)</div><div class="mi-desc">Crispy chicken tossed with peppers in hot sauce</div></div><div class="mi-price">₹260</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Chicken Lollipop</div><div class="mi-desc">Frenched chicken wings deep-fried with hot sauce on side</div></div><div class="mi-price">₹280</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Prawn Fried Rice</div><div class="mi-desc">Wok-tossed basmati with tiger prawns</div></div><div class="mi-price">₹300</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ THALI & COMBOS ═══ -->
+    <div class="menu-section" id="thali">
+      <div class="msec-header veg-hdr">
+        <div class="msec-icon">🍱</div>
+        <div>
+          <div class="msec-title">Thali & Combos</div>
+          <div class="msec-sub">Complete meals — everything in one beautiful plate</div>
+        </div>
+        <div class="msec-bg-text">THALI</div>
+      </div>
+      <div class="menu-grid menu-grid singles">
+        <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Veg Thali</div><div class="mi-desc">Dal · Sabzi · Paneer Curry · Roti · Steamed Rice · Salad · Dessert</div></div><div class="mi-price">₹180</div></div>
+        <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Non-Veg Thali</div><div class="mi-desc">Chicken Curry · Dal · Roti · Biryani or Rice · Raita · Dessert</div></div><div class="mi-price">₹280</div></div>
+        <div class="mi" data-type="nonveg special"><div class="mi-left"><div class="mi-name"><span class="mi-dot sdot"></span>7 Days Premium Thali</div><div class="mi-desc">Starter · 2 Curries (veg or non-veg) · Dal · Naan · Biryani · Raita · Dessert · Drink</div><span class="mi-badge badge-sp">Premium</span></div><div class="mi-price">₹420</div></div>
+        <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Student Combo</div><div class="mi-desc">Dal · Sabzi · 2 Roti · Rice · Pickle — best value, no compromise</div><span class="mi-badge badge-new">Value</span></div><div class="mi-price">₹120</div></div>
+      </div>
+    </div>
+
+    <!-- ═══ FAST FOOD ═══ -->
+    <div class="menu-section" id="fastfood">
+      <div class="msec-header nv-hdr">
+        <div class="msec-icon">🍔</div>
+        <div>
+          <div class="msec-title" style="color:var(--rose-lt)">Fast Food & Snacks</div>
+          <div class="msec-sub">Quick bites with big flavours</div>
+        </div>
+        <div class="msec-bg-text">SNACKS</div>
+      </div>
+      <div class="cat-block">
+        <div class="cat-label vl"><span>Veg Snacks</span></div>
+        <div class="menu-grid">
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Veg Burger</div><div class="mi-desc">Crispy aloo tikki with fresh veggies in a toasted bun</div></div><div class="mi-price">₹120</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>French Fries</div><div class="mi-desc">Golden crispy fries — masala, peri-peri or salted</div></div><div class="mi-price">₹100</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Grilled Veg Sandwich</div><div class="mi-desc">Loaded with veggies and cheese, grilled till golden</div></div><div class="mi-price">₹110</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Loaded Nachos</div><div class="mi-desc">Tortilla chips with cheese sauce, jalapeños and salsa</div></div><div class="mi-price">₹160</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Cheese Maggi</div><div class="mi-desc">Everyone's comfort — spiced maggi with melted cheese</div><span class="mi-badge badge-new">Comfort Food</span></div><div class="mi-price">₹80</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Veg Pizza (7")</div><div class="mi-desc">Thin crust with tomato base, cheese, and fresh vegetables</div></div><div class="mi-price">₹200</div></div>
+        </div>
+      </div>
+      <div class="cat-block">
+        <div class="cat-label nl"><span>Non-Veg Snacks</span></div>
+        <div class="menu-grid">
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Chicken Burger</div><div class="mi-desc">Juicy chicken patty with coleslaw and special sauce</div></div><div class="mi-price">₹160</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Chicken Wrap</div><div class="mi-desc">Spiced chicken with veggies in a soft tortilla</div></div><div class="mi-price">₹170</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Chicken Pizza (7")</div><div class="mi-desc">Thin crust with chicken tikka, cheese, and peppers</div></div><div class="mi-price">₹260</div></div>
+          <div class="mi" data-type="nonveg"><div class="mi-left"><div class="mi-name"><span class="mi-dot ndot"></span>Egg Maggi</div><div class="mi-desc">Spiced maggi topped with fried egg</div></div><div class="mi-price">₹90</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ DESSERTS ═══ -->
+    <div class="menu-section" id="desserts">
+      <div class="msec-header veg-hdr">
+        <div class="msec-icon">🍮</div>
+        <div>
+          <div class="msec-title">Desserts</div>
+          <div class="msec-sub">End on the sweetest note possible</div>
+        </div>
+        <div class="msec-bg-text">SWEET</div>
+      </div>
+      <div class="menu-grid">
+        <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Gulab Jamun</div><div class="mi-desc">Soft milk-solid dumplings in rose syrup, served warm</div></div><div class="mi-price">₹80</div></div>
+        <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Rasgulla</div><div class="mi-desc">Spongy cottage cheese balls in light sugar syrup</div></div><div class="mi-price">₹80</div></div>
+        <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Chocolate Brownie with Ice Cream</div><div class="mi-desc">Warm fudgy brownie paired with vanilla scoop</div><span class="mi-badge badge-sp">Fan Favourite</span></div><div class="mi-price">₹160</div></div>
+        <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Kulfi Falooda</div><div class="mi-desc">Traditional Indian ice cream with rose falooda and basil seeds</div></div><div class="mi-price">₹130</div></div>
+        <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Phirni</div><div class="mi-desc">Creamy ground rice pudding set in earthenware, chilled</div></div><div class="mi-price">₹100</div></div>
+        <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Ice Cream (2 scoops)</div><div class="mi-desc">Vanilla, chocolate, or strawberry — ask for daily flavours</div></div><div class="mi-price">₹80</div></div>
+      </div>
+    </div>
+
+    <!-- ═══ BEVERAGES ═══ -->
+    <div class="menu-section" id="beverages">
+      <div class="msec-header sp-hdr">
+        <div class="msec-icon">🥤</div>
+        <div>
+          <div class="msec-title" style="color:var(--gold-lt)">Beverages</div>
+          <div class="msec-sub">Sip something special — mocktails, lassi, chai and more</div>
+        </div>
+        <div class="msec-bg-text">DRINKS</div>
+      </div>
+      <div class="cat-block">
+        <div class="cat-label gl"><span>Cold Drinks & Mocktails</span></div>
+        <div class="menu-grid">
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Fresh Lime Soda</div><div class="mi-desc">Sparkling water with fresh lime — sweet or salted</div></div><div class="mi-price">₹60</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Mango Lassi</div><div class="mi-desc">Thick blended yogurt with fresh mango — rich and creamy</div></div><div class="mi-price">₹90</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Watermelon Cooler</div><div class="mi-desc">Fresh watermelon with mint and black salt</div></div><div class="mi-price">₹80</div></div>
+          <div class="mi" data-type="veg special"><div class="mi-left"><div class="mi-name"><span class="mi-dot sdot"></span>Mocktail of the Day</div><div class="mi-desc">Ask your server — changes daily, always surprising</div><span class="mi-badge badge-new">Daily Special</span></div><div class="mi-price">₹120</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Virgin Mojito</div><div class="mi-desc">Fresh mint, lime, sugar, soda — perfectly balanced</div></div><div class="mi-price">₹100</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Strawberry Shake</div><div class="mi-desc">Blended fresh strawberries with chilled milk</div></div><div class="mi-price">₹110</div></div>
+        </div>
+      </div>
+      <div class="cat-block">
+        <div class="cat-label gl"><span>Hot Beverages</span></div>
+        <div class="menu-grid">
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Masala Chai</div><div class="mi-desc">Aromatic spiced tea brewed the traditional way</div></div><div class="mi-price">₹40</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Cold Coffee</div><div class="mi-desc">Blended iced coffee with milk — with or without ice cream</div></div><div class="mi-price">₹100</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Filter Coffee</div><div class="mi-desc">South Indian-style decoction with steamed milk</div></div><div class="mi-price">₹60</div></div>
+          <div class="mi" data-type="veg"><div class="mi-left"><div class="mi-name"><span class="mi-dot vdot"></span>Hot Chocolate</div><div class="mi-desc">Rich cocoa with warm milk and a dash of cream</div></div><div class="mi-price">₹90</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CHEF'S SPECIALS ═══ -->
+    <div class="menu-section" id="specials">
+      <div class="msec-header sp-hdr">
+        <div class="msec-icon">⭐</div>
+        <div>
+          <div class="msec-title">Chef's Specials</div>
+          <div class="msec-sub">Signature dishes crafted to keep you coming back</div>
+        </div>
+        <div class="msec-bg-text">SPECIALS</div>
+      </div>
+      <div class="menu-grid menu-grid singles">
+        <div class="mi" data-type="veg special"><div class="mi-left"><div class="mi-name"><span class="mi-dot sdot"></span>7 Days Special Thali</div><div class="mi-desc">Our complete flagship thali — the full 7 Days experience in one plate</div><span class="mi-badge badge-sp">Signature</span></div><div class="mi-price">₹420</div></div>
+        <div class="mi" data-type="nonveg special"><div class="mi-left"><div class="mi-name"><span class="mi-dot sdot"></span>Chef's Biryani of the Week</div><div class="mi-desc">Rotating special biryani using seasonal ingredients — ask your server</div><span class="mi-badge badge-new">Weekly</span></div><div class="mi-price">₹320</div></div>
+        <div class="mi" data-type="veg special"><div class="mi-left"><div class="mi-name"><span class="mi-dot sdot"></span>Satyam Palace Paneer</div><div class="mi-desc">Our hotel's pride — paneer in a unique multi-layered gravy recipe</div><span class="mi-badge badge-sp">Exclusive</span></div><div class="mi-price">₹280</div></div>
+        <div class="mi" data-type="nonveg special"><div class="mi-left"><div class="mi-name"><span class="mi-dot sdot"></span>Satyam Special Chicken</div><div class="mi-desc">House secret recipe — slow-cooked chicken that's worth every rupee</div><span class="mi-badge badge-sp">Exclusive</span></div><div class="mi-price">₹340</div></div>
+        <div class="mi" data-type="veg special"><div class="mi-left"><div class="mi-name"><span class="mi-dot sdot"></span>Mix Platter Royale</div><div class="mi-desc">Veg & non-veg starters, 2 curries, breads, rice, dessert — for 2 persons</div><span class="mi-badge badge-sp">For 2</span></div><div class="mi-price">₹900</div></div>
+      </div>
+    </div>
+
+    <!-- NOTE -->
+    <div class="menu-note">
+      <p>All prices are indicative and inclusive of taxes. Menu items and availability may vary. For daily specials, large group bookings, or catering enquiries — <a href="https://wa.me/917860222555" target="_blank">WhatsApp us</a> or call <a href="tel:07860222555">07860222555</a>.</p>
+      <p style="margin-top:.5rem;color:#5a5248">*This is a sample menu. Actual menu will be updated by the restaurant.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Hamburger
+  const ham=document.getElementById('ham'),drawer=document.getElementById('drawer');
+  if(ham){ham.addEventListener('click',()=>{ham.classList.toggle('open');drawer.classList.toggle('open');document.body.style.overflow=drawer.classList.contains('open')?'hidden':''});drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ham.classList.remove('open');drawer.classList.remove('open');document.body.style.overflow=''}))}
+
+  // Smooth scroll for section nav
+  function scrollTo(id){
+    const el=document.querySelector(id);
+    if(el){const top=el.getBoundingClientRect().top+window.scrollY-120;window.scrollTo({top,behavior:'smooth'})}
+  }
+
+  // Search
+  const searchInput=document.getElementById('searchInput');
+  searchInput.addEventListener('input',()=>{
+    const q=searchInput.value.toLowerCase().trim();
+    document.querySelectorAll('.mi').forEach(mi=>{
+      const text=mi.textContent.toLowerCase();
+      mi.style.display=(!q||text.includes(q))?'':'none';
+    });
+  });
+
+  // Filter chips
+  document.querySelectorAll('.fchip').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on'));
+      chip.classList.add('on');
+      const f=chip.dataset.filter;
+      document.querySelectorAll('.mi').forEach(mi=>{
+        if(f==='all'){mi.style.display=''}
+        else if(f==='special'){mi.style.display=mi.dataset.type&&mi.dataset.type.includes('special')?'':'none'}
+        else{mi.style.display=mi.dataset.type&&mi.dataset.type.includes(f)?'':'none'}
+      });
+    });
+  });
+</script>
+</body>
+</html>
